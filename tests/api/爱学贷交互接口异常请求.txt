@@ -1,0 +1,120 @@
+*** Settings ***
+Resource          resources/keywords.txt
+
+*** Test Cases ***
+E-01_查询酒店列表_必填参数缺失
+    ${headers}=    Set Headers axd
+    ${data}=    Create dictionary    longitude=106.503453
+    ${json_data}    Dumps    ${data}
+    Create Session    api.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    api.fangbaba.cc    /open/hotel/list/query    data=${json_data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Value    ${resp.json()}    纬度为空
+
+E-02_查询酒店列表_必填参数缺失
+    ${headers}=    Set Headers axd
+    ${data}=    Create dictionary    latitude=29.58339
+    ${json_data}    Dumps    ${data}
+    Create Session    api.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    api.fangbaba.cc    /open/hotel/list/query    data=${json_data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Value    ${resp.json()}    经度为空
+
+E-03_查询酒店列表_必填参数缺失
+    ${headers}=    Set Headers axd
+    ${data}=    Create dictionary
+    ${json_data}    Dumps    ${data}
+    Create Session    api.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    api.fangbaba.cc    /open/hotel/list/query    data=${json_data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Value    ${resp.json()}    经度为空
+
+E-04_查询酒店列表_必填参数错误
+    ${headers}=    Set Headers axd
+    ${data}=    Create dictionary    longitude=1    latitude=1
+    ${json_data}    Dumps    ${data}
+    Create Session    api.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    api.fangbaba.cc    /open/hotel/list/query    data=${json_data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    data
+    Dictionary Should Contain Value    ${resp.json()}    ${null}
+
+E-05_根据酒店ID查询房型_必填参数缺失
+    ${headers}=    set headers axd
+    ${data}=    create dictionary
+    ${json_data}    Dumps    ${data}
+    Create Session    api.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    api.fangbaba.cc    /open/hotel/roomtype/query    data=${json_data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    errorMessage
+    Dictionary Should Contain Value    ${resp.json()}    酒店id为空
+
+E-06_根据酒店ID查询房型_必填参数错误
+    ${headers}=    set headers axd
+    ${data}=    create dictionary    hotelid=111111111111111
+    ${json_data}    Dumps    ${data}
+    Create Session    api.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    api.fangbaba.cc    /open/hotel/roomtype/query    data=${json_data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    data
+    Dictionary Should Contain Value    ${resp.json()}    ${null}
+
+E-07_根据酒店id和房型id查询房型价格_必填参数缺失
+    ${headers}=    set headers axd
+    ${data}=    create dictionary    roomtypeid=30046    begintime=2016-03-30    endtime=2016-03-31
+    ${json_data}    Dumps    ${data}
+    Create Session    api.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    api.fangbaba.cc    /open/hotel/queryprice    data=${json_data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    errorMessage
+    Dictionary Should Contain Value    ${resp.json()}    酒店id为空
+
+E-08_根据酒店id和房型id查询房型价格_必填参数缺失
+    ${headers}=    set headers axd
+    ${data}=    create dictionary    hotelid=2813    begintime=2016-03-31    endtime=2016-04-01
+    ${json_data}    Dumps    ${data}
+    Create Session    api.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    api.fangbaba.cc    /open/hotel/queryprice    data=${json_data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    errorMessage
+    Dictionary Should Contain Value    ${resp.json()}    根据酒店id并未查询到房型的价格
+
+E-09_根据酒店id和房型id查询房型价格_必填参数缺失
+    ${headers}=    set headers axd
+    ${data}=    create dictionary    hotelid=2813    roomtypeid=30046    endtime=2016-03-31
+    ${json_data}    Dumps    ${data}
+    Create Session    api.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    api.fangbaba.cc    /open/hotel/queryprice    data=${json_data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    errorMessage
+    Dictionary Should Contain Value    ${resp.json()}    开始时间为空
+
+E-10_根据酒店id和房型id查询房型价格_必填参数缺失
+    ${headers}=    set headers axd
+    ${data}=    create dictionary    hotelid=2813    roomtypeid=30046    begintime=2016-03-30
+    ${json_data}    Dumps    ${data}
+    Create Session    api.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    api.fangbaba.cc    /open/hotel/queryprice    data=${json_data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    errorMessage
+    Dictionary Should Contain Value    ${resp.json()}    结束时间为空

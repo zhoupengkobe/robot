@@ -1,0 +1,63 @@
+*** Settings ***
+Resource          resources/keywords.txt
+
+*** Test Cases ***
+E-01_设置分销开关_必填参数缺失
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    channelId=1
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /distribution/channelswitch    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Value    ${resp.json()}    操作人为空
+
+E-02_设置分销开关_必填参数缺失
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    channelId=1    operator=毛玉明
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /distribution/channelswitch    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Value    ${resp.json()}    开通关闭状态为空
+
+E-03_设置分销开关_必填参数缺失
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /distribution/channelswitch    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Value    ${resp.json()}    渠道id为空
+
+E-04_设置分销开关_必填参数错误
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    channelId=1    operator=毛玉明    channelState=3
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /distribution/channelswitch    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Value    ${resp.json()}    ERROR
+
+E-05_设置分销开关_必填参数错误
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    channelId=9999999    operator=毛玉明    channelState=3
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /distribution/channelswitch    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Value    ${resp.json()}    ERROR
+
+E-06_设置折扣开关_必填参数错误
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /distribution/setting    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Value    ${resp.json()}    开关类型为空

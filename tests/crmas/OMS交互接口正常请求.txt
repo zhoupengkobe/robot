@@ -1,0 +1,30 @@
+*** Settings ***
+Resource          resources/keywords.txt
+
+*** Test Cases ***
+N-01_OMS的登陆
+    ${data}=    Create dictionary    username=18600961261    password=123qwe
+    Create Session    crmas.fangbaba.cc    ${CRM-URL}
+    ${resp}=    Post Request    crmas.fangbaba.cc    /crmas/pms/login    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-02_OMS获取酒店信息
+    ${headers}=    Set Headers
+    Create Session    crmas.fangbaba.cc    ${CRM-URL}    headers=${headers}
+    ${resp}=    Post Request    crmas.fangbaba.cc    /crmas/pms/getHotel
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    ERROR
+
+N-03_OMS获取酒店对应销售信息
+    ${headers}=    Set Headers
+    Create Session    crmas.fangbaba.cc    ${CRM-URL}    headers=${headers}
+    ${resp}=    Post Request    crmas.fangbaba.cc    /crmas/hms/public/getSellerByHotelId
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK

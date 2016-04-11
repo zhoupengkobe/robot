@@ -1,0 +1,27 @@
+*** Settings ***
+Library           Collections
+Library           String
+Library           RequestsLibrary
+Library           OperatingSystem
+Resource          ../../../resources/utils.txt
+Library           json
+
+*** Variables ***
+${TOKEN}          b0baee9d279d34fa1dfd71aadb908c3f
+${HOTELID}        2813
+${Content-Type}    application/json
+${URL}            http://api.fangbaba.cc
+${roomtypePmsNo}    56ab43926c4ee9ef09a655e1
+${roomtypeid}     30025
+${CRM-URL}        http://crmas.fangbaba.cc    # crmas 的地址
+${userid}         011d6ea6-3c0c-11e5-940c-5254002eca56    # 销售ID for SC
+${SC-URL}         http://asc.fangbaba.cc    # sc 的地址
+
+*** Keywords ***
+Set Headers
+    ${headers}=    Create Dictionary    Content-Type=application/x-www-form-urlencoded    HOTELID=${HOTELID}    TOKEN=${TOKEN}    channelId=6
+    Return From Keyword    ${headers}
+
+Set Headers Axd
+    ${headers}=    Create Dictionary    Content-Type=application/json    channelid=6    token=${TOKEN}    timestamp=1458802225
+    Return From Keyword    ${headers}

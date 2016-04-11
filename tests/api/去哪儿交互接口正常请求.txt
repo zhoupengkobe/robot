@@ -1,0 +1,21 @@
+*** Settings ***
+Resource          resources/keywords.txt
+
+*** Test Cases ***
+N-01_查询酒店价格库存
+    ${fromDate}    Generate Date String    NOW
+    ${endDate}    Generate Date String    NOW+10day
+    log    ${fromDate}
+    ${data}    Create dictionary    hotelId=2813    fromDate=${fromDate}    toDate=${endDate}
+    Create Session    api.fangbaba.cc    ${URL}
+    ${resp}    Post Request    api.fangbaba.cc    /qunar/offer/getPriceInfo    data=${data}
+    log    ${resp.text}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Should Contain    ${resp.text}    上轩商务酒店
+
+N-02_查询静态酒店信息
+    Create Session    api.fangbaba.cc    ${URL}
+    ${resp}    Post Request    api.fangbaba.cc    /qunar/hotel/getFullHotelInfo
+    log    ${resp.text}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Should Contain    ${resp.text}    上轩商务酒店

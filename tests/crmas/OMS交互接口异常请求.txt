@@ -1,0 +1,39 @@
+*** Settings ***
+Resource          resources/keywords.txt
+
+*** Test Cases ***
+E-07_OMS的登陆_用户名不存在
+    ${data}=    Create dictionary    username=18600960000    password=123qwe
+    Create Session    crmas.fangbaba.cc    ${CRM-URL}
+    ${resp}=    Post Request    crmas.fangbaba.cc    /crmas/pms/login    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    用户名密码不正确
+
+E-08_OMS的登陆_密码不正确
+    ${data}=    Create dictionary    username=18600961261    password=123456
+    Create Session    crmas.fangbaba.cc    ${CRM-URL}
+    ${resp}=    Post Request    crmas.fangbaba.cc    /crmas/pms/login    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    用户名密码不正确
+
+E-09_OMS获取酒店信息_token无效
+    ${headers}=    Set Headers
+    Create Session    crmas.fangbaba.cc    ${CRM-URL}    headers=${headers}
+    ${resp}=    Post Request    crmas.fangbaba.cc    /crmas/pms/getHotel
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    ERROR
+
+E-10_OMS根据酒店id获取销售信息
+    ${headers}=    Create Dictionary    Content-Type=${Content-Type}    HOTELID=${HOTELID_ERROR}
+    Create Session    crmas.fangbaba.cc    ${CRM-URL}    headers=${headers}
+    ${resp}=    Post Request    crmas.fangbaba.cc    /crmas/hms/public/getSellerByHotelId
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    没有查询到销售信息

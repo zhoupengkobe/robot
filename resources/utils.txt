@@ -1,0 +1,12 @@
+*** Settings ***
+Library           Collections
+Library           String
+Library           RequestsLibrary
+Library           OperatingSystem
+
+*** Keywords ***
+Generate Date String
+    [Arguments]    ${offset}
+    ${fromDate}    Get Time    yyyy-mm-dd    ${offset}
+    ${fromDate}    Get Substring    ${fromDate}    \    10
+    Return From Keyword    ${fromDate}

@@ -1,0 +1,105 @@
+*** Settings ***
+Resource          resources/keywords.txt
+
+*** Test Cases ***
+N-01_查询酒店老板账户余额
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    userId=${userId}    hotelId=${hotelId_sc}
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /oms/stlmt/balance    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-02_查询酒店老板业务单据(全部）
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    userId=${userId}    hotelId=${hotelId_sc}    status=2    start=0    end=1
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /oms/stlmt/bills    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    # Json Value Should Equal    ${jsondata}    /orderid    4503
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-03_查询酒店老板业务单据(分销）
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    userId=${userId}    hotelId=${hotelId_sc}    status=2    start=0    end=1
+    ...    bizType=2
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /oms/stlmt/bills    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    # Json Value Should Equal    ${jsondata}    /orderid    4503
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-04_查询酒店老板业务单据(洗涤）
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    userId=${userId}    hotelId=${hotelId_sc}    status=2    start=0    end=1
+    ...    bizType=3
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /oms/stlmt/bills    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    # Json Value Should Equal    ${jsondata}    /orderid    4503
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-05_查询酒店老板业务单据(采购）
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    userId=${userId}    hotelId=${hotelId_sc}    status=2    start=0    end=1
+    ...    bizType=4
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /oms/stlmt/bills    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    # Json Value Should Equal    ${jsondata}    /orderid    4503
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-06_查询酒店老板业务单据(充值）
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    userId=${userId}    hotelId=${hotelId_sc}    status=2    start=0    end=1
+    ...    bizType=6
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /oms/stlmt/bills    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    # Json Value Should Equal    ${jsondata}    /orderid    4503
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-07_查询酒店老板业务单据(提现）
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    userId=${userId}    hotelId=${hotelId_sc}    status=2    start=0    end=1
+    ...    bizType=7
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /oms/stlmt/bills    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    # Json Value Should Equal    ${jsondata}    /orderid    4503
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-08_酒店老板提现申请
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    accountId=${userId}    hotelpms=${hotelId_sc}    role=1    sum=1
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /oms/stlmt/withdraw    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Value    ${resp.json()}    已提交申请.
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-09_酒店老板提现申请状态查询
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    accountId=${userId}    hotelpms=${hotelId_sc}    role=1    start=0    pagesize=2
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /oms/stlmt/findWithdraw    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK

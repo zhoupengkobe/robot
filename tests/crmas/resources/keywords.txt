@@ -1,0 +1,19 @@
+*** Settings ***
+Library           Collections
+Library           String
+Library           RequestsLibrary
+Library           OperatingSystem
+
+*** Variables ***
+${TOKEN}          b0baee9d279d34fa1dfd71aadb908c3f
+${HOTELID}        56ab38fae4b0156c43d15c8c
+${Content-Type}    application/x-www-form-urlencoded
+${URL}            http://openapi.fangbaba.cc
+${roomtypePmsNo}    56ab43926c4ee9ef09a655e1
+${roomtypeid}     30025
+${CRM-URL}        http://crmas.fangbaba.cc
+
+*** Keywords ***
+Set Headers
+    ${headers}=    Create Dictionary    Content-Type=application/x-www-form-urlencoded    HOTELID=${HOTELID}    TOKEN=${TOKEN}
+    Return From Keyword    ${headers}

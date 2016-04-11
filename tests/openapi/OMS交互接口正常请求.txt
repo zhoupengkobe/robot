@@ -1,0 +1,144 @@
+*** Settings ***
+Resource          resources/keywords.txt
+
+*** Test Cases ***
+N-01_设置分销开关
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    channelId=1    operator=毛玉明    channelState=2
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /distribution/channelswitch    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-02_查询分销开关情况
+    ${headers}=    Set Headers
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /distribution/querychannel
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-03_设置折扣开关
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    code=1001    switchflag=0
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /distribution/setting    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-04_周边分析
+    ${headers}=    Set Headers
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /analysis/query
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-05_设置平时价格
+    ${data}=    Create dictionary    message={"hotelPmsNo": "56ab38fae4b0156c43d15c8c","price": [{"roomtypePmsNo":"56e12d79b9c88b6bb347f450","name": "压测房型","price": "60.00"}]}
+    Create Session    openapi.fangbaba.cc    ${URL}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /district/save/normal    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-06_设置特殊价格
+    ${data}=    Create dictionary    message={"hotelPmsNo": "56ab38fae4b0156c43d15c8c","price": [{"roomtypePmsNo":"56e12d79b9c88b6bb347f450","name": "压测房型","price": "150.00","day":"2016-04-05"}]}
+    Create Session    openapi.fangbaba.cc    ${URL}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /district/save/special    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-07_查询平时价格
+    ${data}=    Create dictionary    message={"hotelPmsNo":"56ab38fae4b0156c43d15c8c","roomtypePmsNo": "56e12d79b9c88b6bb347f450","startTime":"2016-03-02","endTime":"2016-04-10"}
+    Create Session    openapi.fangbaba.cc    ${URL}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /district/query/normal    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-08_查询分销价格
+    ${data}=    Create dictionary    message={"hotelPmsNo": "56ab38fae4b0156c43d15c8c", \ "roomtypePmsNo": "56e12d79b9c88b6bb347f450"}
+    Create Session    openapi.fangbaba.cc    ${URL}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /district/query/normal    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-09_查询当日和未来客单明细
+    ${headers}=    Set Headers
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /order/todayandfuture/query
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-10_查询历史客单列表
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    PAGENUM=1    SHOWNUM=5
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /order/old/query    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-11_查询单条客单明细
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    ROOMORDERID=628
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /order/roomorder/detail/query    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-12_开通关闭酒店分销
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    flag=T
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /wash/distributswitch    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-13_查询分销信息
+    ${headers}=    Set Headers
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /distribution/query
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Should Be Equal As Strings    ${resp.status_code}    200
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK
+
+N-14_查询酒店合同
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    type=1
+    Create Session    openapi.fangbaba.cc    ${URL}    headers=${headers}
+    ${resp}=    Post Request    openapi.fangbaba.cc    /hotelContract/queryContract    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    _MSG_
+    Dictionary Should Contain Value    ${resp.json()}    OK

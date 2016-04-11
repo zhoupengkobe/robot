@@ -1,0 +1,13 @@
+*** Settings ***
+Resource          resources/keywords.txt
+
+*** Test Cases ***
+N-01_给CRM提供销售结算余额
+    ${headers}=    Set Headers
+    ${data}=    Create dictionary    userid=${userid}
+    Create Session    asc.fangbaba.cc    ${SC-URL}    headers=${headers}
+    ${resp}=    Post Request    asc.fangbaba.cc    /crm/stlmt/balance    data=${data}
+    ${jsondata}=    To Json    ${resp.text}    pretty_print=True
+    log    ${jsondata}
+    Dictionary Should Contain Key    ${resp.json()}    error
+    Dictionary Should Contain Value    ${resp.json()}    false
